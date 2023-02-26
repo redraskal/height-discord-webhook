@@ -1,5 +1,6 @@
-import Height, { TaskObject, ActivityObject } from "height-app-api";
+import Height, {TaskObject, ActivityObject, UserObject} from "height-app-api";
 import DiscordWebhook from "./discord.js";
+import {green, taskStatus, white, yellow} from "./utils.js";
 
 const port = process.env.PORT || 3000;
 const webhookId = process.env.HEIGHT_WEBHOOK_ID;
@@ -55,18 +56,38 @@ export default {
 		if (event.type == "task.created") {
 			const task = event.data.model as TaskObject;
 			const author = await height.users.get({ id: task.createdUserId });
+			const parentTask: TaskObject | null = task.parentTaskId ? await height.tasks.get({ id: task.parentTaskId }) : null;
 			await webhook.push(
 				{
 					url: task.url,
-					title: `New task: ${task.name}`,
+					title: `New task: ${parentTask ? `T-${parentTask.index} ${parentTask.name} -> ` : ""}T-${task.index} ${task.name}`,
 					description: task.description,
 					author: {
 						name: author.username,
-						icon_url: author.pictureUrl,
+						icon_url: author.pictureUrl || webhook.avatar,
 					},
 					timestamp: task.createdAt,
-					color: webhook.green,
+					color: white,
 			});
+		}
+		if (event.type == "task.updated") {
+			const task = event.data.model as TaskObject;
+			const assignees: UserObject[] = await Promise.all(task.assigneesIds.map(async (assigneeId: string) => height.users.get({ id: assigneeId })));
+			const parentTask: TaskObject | null = task.parentTaskId ? await height.tasks.get({ id: task.parentTaskId }) : null;
+			const status = await taskStatus(height, task.status);
+			const fields = task.fields.map((field: any) => `${field.name}: ${field.label.value}`).join("\n");
+			await webhook.push(
+				{
+					url: task.url,
+					title: `Updated task: ${parentTask ? `T-${parentTask.index} ${parentTask.name} -> ` : ""}T-${task.index} ${task.name}`,
+					description: `${task.description}\nStatus: ${status.name}\n${fields}\nAssignees: ${assignees.map(assignee => assignee.username).join(", ")}`,
+					author: {
+						name: "Height",
+						icon_url: webhook.avatar,
+					},
+					timestamp: task.createdAt,
+					color: status.color,
+				});
 		}
 		return new Response();
 	},

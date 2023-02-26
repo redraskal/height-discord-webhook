@@ -14,10 +14,7 @@ export type DiscordWebhookRequest = {
 
 export default class DiscordWebhook {
 	url: string;
-
-	green = 0x03d723;
-	red = 0xd70303;
-	yellow = 0xd7d703;
+	avatar = "https://cdn.discordapp.com/avatars/955780901583880232/db5c1a9efe559528fa91c5baa5280e37.png";
 
 	constructor(url: string) {
 		this.url = url;
@@ -31,7 +28,7 @@ export default class DiscordWebhook {
 			},
 			body: JSON.stringify({
 				username: "Height",
-				avatar_url: "https://height.app/a/statics/assets/icon-logo-LZGX7GYI.svg",
+				avatar_url: this.avatar,
 				embeds: [{
 					type: "rich",
 					...request,
