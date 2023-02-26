@@ -1,0 +1,11 @@
+{
+  "name": "height-discord-webhook",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "bun-types": "^0.5.0"
+  },
+  "dependencies": {
+    "height-app-api": "^1.0.5"
+  }
+}
