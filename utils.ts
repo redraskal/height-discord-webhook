@@ -30,15 +30,15 @@ export async function taskStatus(height: Height, status: string): Promise<TaskSt
 		};
 	}
 	const fieldTemplates = await height.fieldTemplates.all();
-	const fieldTemplate = fieldTemplates.list.find((fieldTemplate: FieldTemplateObject) => fieldTemplate.id == status);
-	if (!fieldTemplate) {
+	const label = fieldTemplates.list.find((fieldTemplate: FieldTemplateObject) => fieldTemplate.type == status)?.labels.find((label: FieldTemplateObject) => label.id == status);
+	if (!label) {
 		return {
 			name: "Unknown",
 			color: white,
 		};
 	}
 	return {
-		name: fieldTemplate.name,
+		name: label.value,
 		color: red,
 	};
 }
