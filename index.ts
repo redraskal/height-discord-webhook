@@ -46,7 +46,7 @@ export default {
 	async fetch(request: Request): Promise<Response> {
 		console.log(request.headers.toJSON());
 		const event = await request.json<HeightWebhook>();
-		if (webhookId && event.id != webhookId) {
+		if (webhookId && event.webhookId != webhookId) {
 			return new Response("", {
 				status: 400,
 			});
