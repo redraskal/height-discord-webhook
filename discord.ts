@@ -26,6 +26,9 @@ export default class DiscordWebhook {
 	async push(request: DiscordWebhookRequest) {
 		return fetch(this.url, {
 			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
 			body: JSON.stringify({
 				username: "Height",
 				avatar_url: "https://height.app/a/statics/assets/icon-logo-LZGX7GYI.svg",
