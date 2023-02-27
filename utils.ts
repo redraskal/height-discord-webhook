@@ -11,7 +11,7 @@ export type TaskStatus = {
 };
 
 export async function taskStatus(height: Height, status: string): Promise<TaskStatus> {
-	if (status == "backlog") {
+	if (status == "backLog") {
 		return {
 			name: "To do",
 			color: white,
@@ -30,7 +30,7 @@ export async function taskStatus(height: Height, status: string): Promise<TaskSt
 		};
 	}
 	const fieldTemplates = await height.fieldTemplates.all();
-	const label = fieldTemplates.list.find((fieldTemplate: FieldTemplateObject) => fieldTemplate.type == status)?.labels.find((label: FieldTemplateObject) => label.id == status);
+	const label = fieldTemplates.list.find((fieldTemplate: FieldTemplateObject) => fieldTemplate.type == "status")?.labels.find((label: FieldTemplateObject) => label.id == status);
 	if (!label) {
 		return {
 			name: "Unknown",
@@ -39,6 +39,6 @@ export async function taskStatus(height: Height, status: string): Promise<TaskSt
 	}
 	return {
 		name: label.value,
-		color: red,
+		color: red, // TODO: use correct color
 	};
 }
